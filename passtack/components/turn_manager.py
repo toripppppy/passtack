@@ -30,6 +30,9 @@ class TurnManager:
     self.player_A_action = Action(self.player_A, self.get_command_from_player(player_A, self.turn))
     self.player_B_action = Action(self.player_B, self.get_command_from_player(player_B, self.turn))
 
+    # ターンの終了を判断する
+    self.is_finished = False
+
   def get_command_from_player(self, player: Player, turn: int) -> Command:
     command = player.commands[turn - 1]
     return command
@@ -42,7 +45,7 @@ class TurnManager:
   
   def sort_actions(self, actions: list[Action]) -> list[Action]:
     # 処理順にソートする
-    order = ["guess","trap","attack","big_attack","concentrate"]
+    order = ["guess","trap","big_attack","attack","concentrate"]
     actions.sort(key=lambda action: order.index(action.command.name))
     return actions
 
@@ -52,6 +55,8 @@ class TurnManager:
     
     ### これで全25通り網羅できます！！！！！
     # ======================================== #
+    # 後攻をスキップする場合がある
+
     # 先攻
     def action_1():
       ### 推理
@@ -75,18 +80,23 @@ class TurnManager:
         else:
           print("トラップは不発でした。")
         return
-
-      ### 攻撃
-      # 相手のコマンド : big_attack || concentrate
-      if actions[0].command.name == "attack":
-        print("攻撃！")
-        return
-
+      
       ### 大攻撃
-      # 相手のコマンド : concentrate
+      # 相手のコマンド : attack || concentrate
       if actions[0].command.name == "big_attack":
         print("大攻撃！")
+
+        if actions[1].command.name == "attack":
+          # 後攻を発動
+          action_2()
+
         print("疲れた！休憩")
+        return
+
+      ### 攻撃
+      # 相手のコマンド : concentrate
+      if actions[0].command.name == "attack":
+        print("攻撃！")
         return
 
     # 後攻
@@ -100,17 +110,20 @@ class TurnManager:
           print("トラップは不発でした。")
         return
       
-      ### 攻撃
-      # 相手のコマンド : big_attack || concentrate
-      if actions[1].command.name == "attack":
-        print("攻撃！")
-        return
-
       ### 大攻撃
-      # 相手のコマンド : concentrate
+      # 相手のコマンド : attack || concentrate
       if actions[1].command.name == "big_attack":
         print("大攻撃！")
         print("疲れた！休憩")
+        return
+      
+      ### 攻撃
+      # 相手のコマンド : concentrate
+      if actions[1].command.name == "attack":
+        print("攻撃！")
+        if actions[0].command.name == "big_attack":
+          print("半分を相殺しました。")
+          self.is_finished = True
         return
 
       ### 集中
@@ -126,6 +139,7 @@ class TurnManager:
       print("相殺しました。")
     else:
       action_1()
-      action_2()
+      if self.is_finished == False:
+        action_2()
     # ======================================== #
 
