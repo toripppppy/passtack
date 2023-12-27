@@ -8,3 +8,4 @@ class Player:
   def __init__(self, name: str, commands: list[Command] = None) -> None:
     self.name = name
     self.commands = commands
+    self.damage_count = 0
