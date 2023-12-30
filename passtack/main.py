@@ -1,15 +1,15 @@
-from components import Player, Command, TurnManager, Damage
+from components import Player, Command, TurnManager, Damage, Messager
 
 
 player_A = Player("A", [
-  Command("guess"),
+  Command("concentrate"),
   Command("attack"),
   Command("attack"),
   Command("attack"),
   Command("attack"),
 ])
 player_B = Player("B", [
-  Command("trap"),
+  Command("big_attack"),
   Command("big_attack"),
   Command("concentrate"),
   Command("trap"),
@@ -31,6 +31,7 @@ for event in tm.event_queue:
   if isinstance(event, Damage):
     print(event)
     apply_damage(event)
+
 
 
 print(f"[{player_A.name}] 総被ダメージ: {player_A.damage_count}")
