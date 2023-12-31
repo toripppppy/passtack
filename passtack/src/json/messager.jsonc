@@ -1,24 +1,30 @@
 {
+  // 相殺
   "set_off": "ダメージが相殺された。",
   "set_off_harf": "ダメージの半分が相殺された。",
 
+  // 推理
   "guess_attack": "攻撃が見え見えすぎる・・・",
   "guess_success": "推理成功！",
   "guess_failure": "推理失敗・・・。",
   
-
+  // トラップ
   "trap_success": "トラップ発動！相手の大攻撃を防いだ！",
   "trap_failure": "トラップ失敗。",
 
+  // 攻撃
   "attack": "攻撃！",
 
+  // 大攻撃
   "big_attack": "大攻撃！",
   "big_attack_sleep": "疲れた！休憩します",
 
+  // 集中
   "concentrate_start": "集中します・・・。",
   "concentrate_seen": "見えた！ {player} の次の行動は {command} でした。",
   "concentrate_sleep": "見えた！が、空白だった。ショックで１ターン休み",
 
+  // 汎用
   "damage": "{source} から {target} へ {amount} ダメージ！",
   "cancel": "{player} の {command} はキャンセルされた！"
 }

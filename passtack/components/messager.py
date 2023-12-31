@@ -6,16 +6,23 @@ import re
 
 class Messager:
   def __init__(self) -> None:
-    self.json_path = "passtack/src/json/turn_message.json"
+    self.json_path = "passtack/src/json/messager.jsonc"
+    self.json_data = self.get_json_data()
 
-  def get_json(self) -> object:
-    json_open = open(self.json_path, 'r')
-    return json.load(json_open)
+  def get_json_data(self) -> object:
+    with open(self.json_path, 'r', encoding='utf-8') as f:
+      jsonc_text = f.read()
+    json_text = self.delete_comments(jsonc_text)
+    return json.loads(json_text)
+  
+  def delete_comments(self, text: str) -> str:
+    re_text = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)
+    return re_text
 
   def get_message_template(self, key: str) -> str:
-    j = self.get_json()
-    if key in j.keys():
-      return j[key]
+    json_data = self.json_data
+    if key in json_data.keys():
+      return json_data[key]
     
   ### 汎用
   def message(self, key: str) -> None:
