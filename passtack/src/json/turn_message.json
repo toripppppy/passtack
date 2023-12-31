@@ -5,7 +5,7 @@
   "guess_attack": "攻撃が見え見えすぎる・・・",
   "guess_success": "推理成功！",
   "guess_failure": "推理失敗・・・。",
-  "guess_sleep": "見えた！が、相手のターンは空白だ。ショックで１ターン休み",
+  
 
   "trap_success": "トラップ発動！相手の大攻撃を防いだ！",
   "trap_failure": "トラップ失敗。",
@@ -17,6 +17,7 @@
 
   "concentrate_start": "集中します・・・。",
   "concentrate_seen": "見えた！ {player} の次の行動は {command} でした。",
+  "concentrate_sleep": "見えた！が、空白だった。ショックで１ターン休み",
 
   "damage": "{source} から {target} へ {amount} ダメージ！",
   "cancel": "{player} の {command} はキャンセルされた！"

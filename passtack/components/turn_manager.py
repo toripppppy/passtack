@@ -3,7 +3,6 @@ from components.player import Player
 from components.damage import Damage
 from components.messager import Messager
 
-
 class Action:
   """
   プレイヤーのコマンド使用を、プレイヤーとコマンドを紐づけたActionとして扱う
@@ -173,9 +172,9 @@ class TurnManager:
         self.messager.message("concentrate_start")
         if actions[0].command.name == "big_attack":
           # 次のターンは空白でそのショックから動けなくなる仕様
-          self.messager.message("big_attack_sleep")
+          self.messager.message("concentrate_sleep")
         else:
-          self.messager.concentrate(self.get_command_from_player(actions[0].player, self.turn + 1).name)
+          self.messager.concentrate(Action(actions[0].player, self.get_command_from_player(actions[0].player, self.turn + 1)))
           
           # TODO コマンドの入力を受けてActionを生成する
           next_action = input("次のコマンドを入力してください:")
