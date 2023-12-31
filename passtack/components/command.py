@@ -6,11 +6,6 @@ class Command:
   def __init__(self, name: str) -> None:
     self.name = name
     self.is_active = True
-    pass
-
-  def use(self) -> None:
-    print(f"{self.name}を使用します")
-    pass
 
   def set_active(self, state) -> None:
     self.is_active = state
