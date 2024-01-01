@@ -15,7 +15,6 @@ class Action:
   def __init__(self, player: Player, command: Command) -> None:
     self.player = player
     self.command = command
-    pass
 
 
 class TurnManager:
@@ -39,6 +38,15 @@ class TurnManager:
 
     # ターンの終了を判断する
     self.is_finished = False
+
+    self.turn_start()
+
+  def turn_start(self):
+    # ターン開始の演出
+    messager.turn_start(self.turn)
+
+  def turn_end(self):
+    messager.turn_end(self.turn)
 
   def get_command_from_player(self, player: Player, turn: int) -> Command:
     command = player.commands[turn - 1]
@@ -137,7 +145,7 @@ class TurnManager:
       ### 攻撃
       # 相手のコマンド : concentrate
       if actions[0].command.name == "attack":
-        print("攻撃！")
+        messager.message("attack")
         return Damage(1, source=actions[0].player, target=actions[1].player)
 
     # 後攻
@@ -175,7 +183,8 @@ class TurnManager:
           # 次のターンは空白でそのショックから動けなくなる仕様
           messager.message("concentrate.sleep")
         else:
-          messager.concentrate(Action(actions[0].player, self.get_command_from_player(actions[0].player, self.turn + 1)))
+          next_action = Action(actions[0].player, self.get_command_from_player(actions[0].player, self.turn + 1))
+          messager.concentrate(next_action)
           
           # TODO コマンドの入力を受けてActionを生成する
           next_action = input("次のコマンドを入力してください:")
@@ -192,4 +201,6 @@ class TurnManager:
         damage_2 = action_2()
         self.append_event_queue(damage_2)
     # ======================================== #
+    # ターン終了
+    self.turn_end()
 

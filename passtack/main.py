@@ -9,17 +9,12 @@ player_A = Player("A", [
   Command("attack"),
 ])
 player_B = Player("B", [
-  Command("big_attack"),
+  Command("attack"),
   Command("big_attack"),
   Command("concentrate"),
   Command("trap"),
   Command("guess"),
 ])
-
-tm = TurnManager(player_A, player_B, 1)
-tm.do_turn()
-
-print(tm.event_queue)
 
 def apply_damage(damage: Damage) -> None:
   if damage.amount == 0:
@@ -27,10 +22,14 @@ def apply_damage(damage: Damage) -> None:
   target_player = damage.target
   target_player.damage_count += damage.amount
 
-for event in tm.event_queue:
-  if isinstance(event, Damage):
-    print(event)
-    apply_damage(event)
+for i in range(1,5+1):
+  tm = TurnManager(player_A, player_B, i)
+  tm.do_turn()
+
+  for event in tm.event_queue:
+    if isinstance(event, Damage):
+      print(event)
+      apply_damage(event)
 
 
 

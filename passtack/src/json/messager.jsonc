@@ -1,4 +1,15 @@
 {
+  // TurnManager
+  // =========================================== //
+  
+  // ターン開始
+  "turn_manager.start": "=== < ターン{turn} > ===",
+  "turn_manager.end": "=== < ターン{turn} 終了 > ===\n",
+
+  // 汎用
+  "damage": "{source} から {target} へ {amount} ダメージ！",
+  "cancel": "{player} の {command} はキャンセルされた！",
+
   // 相殺
   "set_off": "ダメージが相殺された。",
   "set_off.harf": "ダメージの半分が相殺された。",
@@ -22,9 +33,5 @@
   // 集中
   "concentrate.start": "集中します・・・。",
   "concentrate.seen": "見えた！ {player} の次の行動は {command} でした。",
-  "concentrate.sleep": "見えた！が、空白だった。ショックで１ターン休み",
-
-  // 汎用
-  "damage": "{source} から {target} へ {amount} ダメージ！",
-  "cancel": "{player} の {command} はキャンセルされた！"
+  "concentrate.sleep": "見えた！が、空白だった。ショックで１ターン休み"
 }

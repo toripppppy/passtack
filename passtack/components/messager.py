@@ -24,17 +24,20 @@ class Messager:
     if key in json_data.keys():
       return json_data[key]
     
+  def print(self, text) -> None:
+    print(text)
+    
   ### 汎用
   def message(self, key: str) -> None:
     msgtmp = self.get_message_template(key)
     # 変数の埋め込みが必要であればエラー
     if re.match(r"\{.*\}", msgtmp):
       raise f"Error: {key} requires format"
-    print(msgtmp)
+    self.print(msgtmp)
     
   def damage(self, damage: Damage) -> None:
     msgtmp = self.get_message_template("damage")
-    print(msgtmp.format(
+    self.print(msgtmp.format(
       source=damage.source.name,
       target=damage.target.name,
       amount=damage.amount,
@@ -42,17 +45,23 @@ class Messager:
 
   def cancel(self, target_action: Action) -> None:
     msgtmp = self.get_message_template("cancel")
-    print(msgtmp.format(
+    self.print(msgtmp.format(
       player=target_action.player.name,
       command=target_action.command.name,
     ))
 
   ### 固有
   def concentrate(self, seen_action: Action) -> None:
-    self.message("concentrate.start")
-    
     msgtmp = self.get_message_template("concentrate.seen")
-    print(msgtmp.format(
+    self.print(msgtmp.format(
       player=seen_action.player.name,
       command=seen_action.command.name,
     ))
+
+  def turn_start(self, turn: int):
+    msgtmp = self.get_message_template("turn_manager.start")
+    self.print(msgtmp.format(turn=turn))
+
+  def turn_end(self, turn: int):
+      msgtmp = self.get_message_template("turn_manager.end")
+      self.print(msgtmp.format(turn=turn))
