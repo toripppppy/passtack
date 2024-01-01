@@ -42,10 +42,11 @@ class TurnManager:
     self.turn_start()
 
   def turn_start(self):
-    # ターン開始の演出
+    # ターン開始直後に呼び出される
     messager.turn_start(self.turn)
 
   def turn_end(self):
+    # ターン終了直前に呼び出される
     messager.turn_end(self.turn)
 
   def get_command_from_player(self, player: Player, turn: int) -> Command:

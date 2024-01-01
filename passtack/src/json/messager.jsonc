@@ -1,7 +1,6 @@
 {
   // TurnManager
   // =========================================== //
-  
   // ターン開始
   "turn_manager.start": "=== < ターン{turn} > ===",
   "turn_manager.end": "=== < ターン{turn} 終了 > ===\n",
