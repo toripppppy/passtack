@@ -49,9 +49,9 @@ class Messager:
 
   ### 固有
   def concentrate(self, seen_action: Action) -> None:
-    self.message("concentrate_start")
+    self.message("concentrate.start")
     
-    msgtmp = self.get_message_template("concentrate_seen")
+    msgtmp = self.get_message_template("concentrate.seen")
     print(msgtmp.format(
       player=seen_action.player.name,
       command=seen_action.command.name,

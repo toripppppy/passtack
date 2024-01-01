@@ -79,7 +79,7 @@ class TurnManager:
         # 攻撃はバレバレなので推理が必ず成功する仕様
         if actions[1].command.name == "attack":
           is_success = True
-          messager.message("guess_attack")
+          messager.message("guess.attack")
 
         elif input("コマンドを予想してください: ") == actions[1].command.name:
           is_success = True
@@ -87,14 +87,14 @@ class TurnManager:
         if is_success:
           # 推理成功　相手に１ダメージ、相手の行動はキャンセル（集中を除く）
           damage = Damage(1, source=actions[0].player, target=actions[1].player)
-          messager.message("guess_success")
+          messager.message("guess.success")
           messager.cancel(actions[1])
           messager.damage(damage)
           if actions[1].command.name != "concentrate":
             cancel_action_2()
         else:
           # 推理失敗　何も起こらない
-          messager.message("guess_failure")
+          messager.message("guess.failure")
           damage = Damage(0)
 
         return damage
@@ -105,13 +105,13 @@ class TurnManager:
         if actions[1].command.name == "big_attack":
           # トラップ成功　相手に２ダメージ、相手の大攻撃はキャンセル
           damage = Damage(2, source=actions[0].player, target=actions[1].player)
-          messager.message("trap_success")
+          messager.message("trap.success")
           messager.damage(damage)
           cancel_action_2()
         else:
           # トラップ失敗　何も起こらない
           damage = Damage(0)
-          messager.message("trap_failure")
+          messager.message("trap.failure")
         
         return damage
       
@@ -123,7 +123,7 @@ class TurnManager:
         # 攻撃に半分相殺される
         if actions[1].command.name == "attack":
           damage = Damage(1, source=actions[0].player, target=actions[1].player)
-          messager.message("set_off_harf")
+          messager.message("set_off.harf")
           cancel_action_2()
         
         # 通常通り2ダメージ
@@ -131,7 +131,7 @@ class TurnManager:
           damage = Damage(2, source=actions[0].player, target=actions[1].player)
 
         messager.damage(damage)
-        messager.message("big_attack_sleep")
+        messager.message("big_attack.sleep")
         return damage
 
       ### 攻撃
@@ -147,7 +147,7 @@ class TurnManager:
       if actions[1].command.name == "trap":
         # 相手のコマンドは guess しかないので必ず失敗する
         damage = Damage(0)
-        messager.message("trap_failure")
+        messager.message("trap.failure")
         return damage
       
       ### 大攻撃
@@ -156,7 +156,7 @@ class TurnManager:
         damage = Damage(2, source=actions[1].player, target=actions[0].player)
         messager.message("big_attack")
         messager.damage(damage)
-        messager.message("big_attack_sleep")
+        messager.message("big_attack.sleep")
         return damage
       
       ### 攻撃
@@ -170,10 +170,10 @@ class TurnManager:
       ### 集中
       # 相手のコマンド : guess || trap || big_attack || attack
       if actions[1].command.name == "concentrate":
-        messager.message("concentrate_start")
+        messager.message("concentrate.start")
         if actions[0].command.name == "big_attack":
           # 次のターンは空白でそのショックから動けなくなる仕様
-          messager.message("concentrate_sleep")
+          messager.message("concentrate.sleep")
         else:
           messager.concentrate(Action(actions[0].player, self.get_command_from_player(actions[0].player, self.turn + 1)))
           
