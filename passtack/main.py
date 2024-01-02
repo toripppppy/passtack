@@ -1,20 +1,9 @@
-from components import Player, Command, TurnManager, Damage, Messager, InputManager
+from components import Player, Command, TurnManager, Damage
+from input_manager import InputManager
 
 input_manager = InputManager()
 
-# 行先未定
-def convert_to_commands(stack: list[str]):
-  commands = list()
-  for command_name in stack:
-    commands.append(Command(command_name))
-    if command_name in ["big_attack","concentrate"]:
-      commands.append(Command(command_name, is_active=False))
-
-  return commands
-
-input_manager.get_stack_input()
-
-player_A = Player("A", convert_to_commands(input_manager.commands))
+player_A = Player("A", input_manager.get_command_stack_input())
 player_B = Player("B", [
   Command("attack"),
   Command("big_attack"),

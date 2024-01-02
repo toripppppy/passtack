@@ -1,3 +1,4 @@
+from components import Command
 import inquirer
 
 # サイン -> コマンドへの対応表
@@ -33,19 +34,23 @@ class InputManager:
   def __init__(self) -> None:
     self.commands = list()
 
+  def get_command_stack_input(self) -> None:
+    self.name_stack_input()
+    return self.convert_to_command_stack(self.commands)
+
   # スタックの入力を受け付ける
-  def get_stack_input(self):
-    self.get_sign_input()
+  def name_stack_input(self):
+    self.sign_input()
 
     if self.calc_using_turns() < 5:
       # 再帰
-      self.get_stack_input()
+      self.name_stack_input()
       return
 
     print(self.create_command_display())
-    self.get_stack_input_finish()
+    self.name_stack_input_finish()
 
-  def get_stack_input_finish(self):
+  def name_stack_input_finish(self):
     fix_stack = self.confirm("以上で決定しますか？")
     if fix_stack:
       print("決定しました。")
@@ -55,10 +60,10 @@ class InputManager:
       print("再度選択してください。")
       # 初期化してやり直し
       self.__init__()
-      self.get_stack_input()
+      self.name_stack_input()
 
   # サインの入力を受け付ける
-  def get_sign_input(self):
+  def sign_input(self):
     # 表示
     print()
     print(self.create_command_display())
@@ -76,6 +81,15 @@ class InputManager:
         choices=choices
       )
     self.commands.append(self.get_key_by_description(answer))
+
+  def convert_to_command_stack(self, name_stack: list[str]):
+    commands = list()
+    for command_name in name_stack:
+      commands.append(Command(command_name))
+      if command_name in ["big_attack","concentrate"]:
+        commands.append(Command(command_name, is_active=False))
+
+    return commands
 
   # command_dict を description で逆引きする
   def get_key_by_description(self, description: str) -> str:
