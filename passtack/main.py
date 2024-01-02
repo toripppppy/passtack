@@ -1,9 +1,7 @@
 from components import Player, Command, TurnManager, Damage
 from input_manager import InputManager
 
-input_manager = InputManager()
-
-player_A = Player("A", input_manager.get_command_stack_input())
+player_A = Player("A", InputManager(turn_limit=5).get_command_stack_input())
 player_B = Player("B", [
   Command("attack"),
   Command("big_attack"),
@@ -21,7 +19,7 @@ def apply_damage(damage: Damage) -> None:
   target_player.damage_count += damage.amount
 
 for i in range(1,5+1):
-  tm = TurnManager(player_A, player_B, i)
+  tm = TurnManager(player_A, player_B, i, command_inputter=InputManager(turn_limit=1).get_command_input)
   tm.do_turn()
 
   for event in tm.event_queue:

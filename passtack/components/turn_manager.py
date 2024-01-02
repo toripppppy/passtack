@@ -23,7 +23,7 @@ class TurnManager:
   player_A, player_B: プレイヤー
   turn: 今回のターンを指定(変更しない)
   """
-  def __init__(self, player_A: Player, player_B: Player, turn: int) -> None:
+  def __init__(self, player_A: Player, player_B: Player, turn: int, command_inputter) -> None:
     self.turn = turn
 
     # 一旦この仕様で
@@ -40,6 +40,10 @@ class TurnManager:
     self.is_finished = False
 
     self.turn_start()
+
+    ### emit
+    # Commandを返す関数
+    self.command_inputter = command_inputter
 
   def turn_start(self):
     # ターン開始直後に呼び出される
@@ -184,12 +188,12 @@ class TurnManager:
           # 次のターンは空白でそのショックから動けなくなる仕様
           messager.message("concentrate.sleep")
         else:
-          next_action = Action(actions[0].player, self.get_command_from_player(actions[0].player, self.turn + 1))
-          messager.concentrate(next_action)
-          
-          # TODO コマンドの入力を受けてActionを生成する
-          next_action = input("次のコマンドを入力してください:")
-          print(f"次のコマンドを[{next_action}]にしました")
+          others_next_action = Action(actions[0].player, self.get_command_from_player(actions[0].player, self.turn + 1))
+          messager.concentrate(others_next_action)
+
+          self_next_command = self.command_inputter()
+          print(f"次のコマンドを[{self_next_command}]にしました")
+          actions[1].player.commands[self.turn] = self_next_command
         return Damage(0)
       
     ### コマンドが被ると相殺される

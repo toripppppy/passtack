@@ -31,10 +31,19 @@ command_dict = {
 }
 
 class InputManager:
-  def __init__(self) -> None:
+  """
+  CLI的に入力を取得するUI
+  使い捨てが前提
+  """
+  def __init__(self, turn_limit) -> None:
     self.commands = list()
+    self.turn_limit = turn_limit
+  
+  def get_command_input(self) -> Command:
+    self.get_command_stack_input()
+    return self.convert_to_command_stack(self.commands)[0]
 
-  def get_command_stack_input(self) -> None:
+  def get_command_stack_input(self) -> list[Command]:
     self.name_stack_input()
     return self.convert_to_command_stack(self.commands)
 
@@ -42,7 +51,7 @@ class InputManager:
   def name_stack_input(self):
     self.sign_input()
 
-    if self.calc_using_turns() < 5:
+    if self.calc_using_turns() < self.turn_limit:
       # 再帰
       self.name_stack_input()
       return
@@ -59,7 +68,7 @@ class InputManager:
     else:
       print("再度選択してください。")
       # 初期化してやり直し
-      self.__init__()
+      self.__init__(self.turn_limit)
       self.name_stack_input()
 
   # サインの入力を受け付ける
@@ -68,11 +77,10 @@ class InputManager:
     print()
     print(self.create_command_display())
 
-    remaining_turns = 5 - self.calc_using_turns()
     choices = list()
     for cmd in command_dict.values():
       # 残りターンに応じて使用可能なコマンドのみを選択肢に追加する
-      if cmd["turn_amount"] <= remaining_turns:
+      if cmd["turn_amount"] <= self.calc_remaining_turns():
         choices.append(cmd["description"])
     
     # 入力の受け付け
@@ -82,7 +90,7 @@ class InputManager:
       )
     self.commands.append(self.get_key_by_description(answer))
 
-  def convert_to_command_stack(self, name_stack: list[str]):
+  def convert_to_command_stack(self, name_stack: list[str]) -> list[Command]:
     commands = list()
     for command_name in name_stack:
       commands.append(Command(command_name))
@@ -102,11 +110,10 @@ class InputManager:
     for command in self.commands:
       commands.append(command_dict[command]["sign"])
 
-    remaining_turns = 5 - self.calc_using_turns()
+    # 隙間埋め
+    commands += ["-"] * self.calc_remaining_turns()
 
-    commands += ["-"]*remaining_turns
-
-    return "/".join(commands) + f"[{self.calc_using_turns()}/5]"
+    return "/".join(commands) + f"[{self.calc_using_turns()}/{self.turn_limit}]"
   
   # 使用中のターン数を計算する
   def calc_using_turns(self) -> int:
@@ -115,6 +122,9 @@ class InputManager:
       turns += command_dict[command]["turn_amount"]
 
     return turns
+  
+  def calc_remaining_turns(self) -> int:
+    return self.turn_limit - self.calc_using_turns()
   
   def _list(self, message: str, choices: list[str]) -> str:
     questions = [
