@@ -64,7 +64,7 @@ class CLIInput:
     if fix_stack:
       print("決定しました。")
       # debug
-      print(self.commands)
+      # print(self.commands)
     else:
       print("再度選択してください。")
       # 初期化してやり直し

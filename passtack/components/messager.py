@@ -25,7 +25,13 @@ class Messager:
       return json_data[key]
     
   def print(self, text) -> None:
-    print("please override")
+    print("<print> please override")
+
+  def wait(self) -> None:
+    print("<wait> please override")
+
+  def clear(self) -> None:
+    print("<clear> please override")
     
   ### 汎用
   def message(self, key: str) -> None:
@@ -35,7 +41,7 @@ class Messager:
       raise f"Error: {key} requires format"
     self.print(msgtmp)
     
-  def damage(self, damage: Damage) -> None:
+  def message_with_damage(self, damage: Damage) -> None:
     msgtmp = self.get_message_template("damage")
     self.print(msgtmp.format(
       source=damage.source.name,
@@ -43,25 +49,23 @@ class Messager:
       amount=damage.amount,
     ))
 
-  def cancel(self, target_action: Action) -> None:
-    msgtmp = self.get_message_template("cancel")
+  def message_with_action(self, key: str, action: Action) -> None:
+    msgtmp = self.get_message_template(key)
     self.print(msgtmp.format(
-      player=target_action.player.name,
-      command=target_action.command.name,
+      player=action.player.name,
+      command=action.command.name,
     ))
 
-  ### 固有
-  def concentrate(self, seen_action: Action) -> None:
-    msgtmp = self.get_message_template("concentrate.seen")
-    self.print(msgtmp.format(
-      player=seen_action.player.name,
-      command=seen_action.command.name,
-    ))
-
-  def turn_start(self, turn: int):
-    msgtmp = self.get_message_template("turn_manager.start")
+  def message_with_turn(self, key: str, turn: int):
+    msgtmp = self.get_message_template(key)
     self.print(msgtmp.format(turn=turn))
 
-  def turn_end(self, turn: int):
-      msgtmp = self.get_message_template("turn_manager.end")
-      self.print(msgtmp.format(turn=turn))
+  ### 固有
+  def cancel(self, target_action: Action) -> None:
+    self.message_with_action("cancel", target_action)
+
+  def concentrate(self, seen_action: Action) -> None:
+    self.message_with_action("concentrate.seen", seen_action)
+
+  def use_command(self, action: Action) -> None:
+    self.message_with_action("use", action)

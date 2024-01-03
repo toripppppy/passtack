@@ -46,11 +46,13 @@ class TurnManager:
 
   def turn_start(self):
     # ターン開始直後に呼び出される
-    self.messager.turn_start(self.turn)
+    self.messager.message_with_turn("turn_manager.start", self.turn)
 
   def turn_end(self):
     # ターン終了直前に呼び出される
-    self.messager.turn_end(self.turn)
+    # self.messager.message_with_turn("turn_manager.end", self.turn)
+    self.messager.wait()
+    self.messager.clear()
 
   def get_command_from_player(self, player: Player, turn: int) -> Command:
     command = player.commands[turn - 1]
@@ -73,7 +75,8 @@ class TurnManager:
 
   def do_turn(self):
     actions = self.sort_actions([self.player_A_action, self.player_B_action])
-    print(list(map(lambda x: x.command.name, actions)))
+    # debug
+    # print(list(map(lambda x: x.command.name, actions)))
     
     ### これで全25通り網羅できます！！！！！
     # ======================================== #
@@ -83,6 +86,7 @@ class TurnManager:
 
     # 先攻
     def action_1() -> Damage:
+      self.messager.use_command(actions[0])
       ### 推理
       # 相手のコマンド : trap || attack || big_attack || concentrate
       if actions[0].command.name == "guess":
@@ -101,7 +105,7 @@ class TurnManager:
           damage = Damage(1, source=actions[0].player, target=actions[1].player)
           self.messager.message("guess.success")
           self.messager.cancel(actions[1])
-          self.messager.damage(damage)
+          self.messager.message_with_damage(damage)
           if actions[1].command.name != "concentrate":
             cancel_action_2()
         else:
@@ -117,8 +121,9 @@ class TurnManager:
         if actions[1].command.name == "big_attack":
           # トラップ成功　相手に２ダメージ、相手の大攻撃はキャンセル
           damage = Damage(2, source=actions[0].player, target=actions[1].player)
+          self.messager.use_command(actions[1])
           self.messager.message("trap.success")
-          self.messager.damage(damage)
+          self.messager.message_with_damage(damage)
           cancel_action_2()
         else:
           # トラップ失敗　何も起こらない
@@ -130,11 +135,11 @@ class TurnManager:
       ### 大攻撃
       # 相手のコマンド : attack || concentrate
       if actions[0].command.name == "big_attack":
-        self.messager.message("big_attack")
 
         # 攻撃に半分相殺される
         if actions[1].command.name == "attack":
           damage = Damage(1, source=actions[0].player, target=actions[1].player)
+          self.messager.use_command(actions[1])
           self.messager.message("set_off.harf")
           cancel_action_2()
         
@@ -142,18 +147,18 @@ class TurnManager:
         else:
           damage = Damage(2, source=actions[0].player, target=actions[1].player)
 
-        self.messager.damage(damage)
+        self.messager.message_with_damage(damage)
         self.messager.message("big_attack.sleep")
         return damage
 
       ### 攻撃
       # 相手のコマンド : concentrate
       if actions[0].command.name == "attack":
-        self.messager.message("attack")
         return Damage(1, source=actions[0].player, target=actions[1].player)
 
     # 後攻
     def action_2() -> Damage:
+      self.messager.use_command(actions[1])
       ### トラップ
       # 相手のコマンド : guess
       if actions[1].command.name == "trap":
@@ -166,8 +171,7 @@ class TurnManager:
       # 相手のコマンド : guess
       if actions[1].command.name == "big_attack":
         damage = Damage(2, source=actions[1].player, target=actions[0].player)
-        self.messager.message("big_attack")
-        self.messager.damage(damage)
+        self.messager.message_with_damage(damage)
         self.messager.message("big_attack.sleep")
         return damage
       
@@ -175,8 +179,7 @@ class TurnManager:
       # 相手のコマンド : trap
       if actions[1].command.name == "attack":
         damage = Damage(1, source=actions[1].player, target=actions[0].player)
-        self.messager.message("attack")
-        self.messager.damage(damage)
+        self.messager.message_with_damage(damage)
         return damage
 
       ### 集中
@@ -197,6 +200,8 @@ class TurnManager:
       
     ### コマンドが被ると相殺される
     if actions[0].command.name == actions[1].command.name:
+      self.messager.use_command(actions[0])
+      self.messager.use_command(actions[1])
       self.messager.message("set_off")
     else:
       damage_1 = action_1()
