@@ -25,7 +25,7 @@ class Messager:
       return json_data[key]
     
   def print(self, text) -> None:
-    print(text)
+    print("please override")
     
   ### 汎用
   def message(self, key: str) -> None:

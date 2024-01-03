@@ -30,7 +30,7 @@ command_dict = {
   },
 }
 
-class InputManager:
+class CLIInput:
   """
   CLI的に入力を取得するUI
   使い捨てが前提
